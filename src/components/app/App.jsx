@@ -11,6 +11,7 @@ import {
   PhoneBookSection,
   ContactSection,
 } from './App.styled';
+import { useSelector } from 'react-redux';
 
 export default function App() {
   const [contacts, setContacts] = useState(() => {
