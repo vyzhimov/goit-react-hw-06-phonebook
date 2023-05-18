@@ -1,4 +1,7 @@
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
+import { getContactsList, getContactsFilter } from 'redux/selectors';
+import { deleteContact } from 'redux/contactsSlice';
+
 import { RiDeleteBin3Line } from 'react-icons/ri';
 import { BsPersonCircle } from 'react-icons/bs';
 import { GiRotaryPhone } from 'react-icons/gi';
@@ -11,10 +14,22 @@ import {
   ContactInfo,
 } from './ContactList.styled';
 
-export default function ContactsList({ contacts, deleteContact }) {
+export default function ContactsList() {
+  const contactsList = useSelector(getContactsList);
+  const filteredValue = useSelector(getContactsFilter);
+  const dispatch = useDispatch();
+
+  const filteredContacts = contactsList.filter(({ name }) =>
+    name.toLowerCase().includes(filteredValue.toLowerCase())
+  );
+
+  const handleDeleteContact = id => {
+    dispatch(deleteContact(id));
+  };
+
   return (
     <ContactList>
-      {contacts.map(({ id, name, number }) => {
+      {filteredContacts.map(({ id, name, number }) => {
         return (
           <ContactItem key={id}>
             <ContactCard>
@@ -28,7 +43,7 @@ export default function ContactsList({ contacts, deleteContact }) {
               </ContactInfo>
             </ContactCard>
 
-            <DeleteBtn onClick={() => deleteContact(id)}>
+            <DeleteBtn onClick={handleDeleteContact}>
               <RiDeleteBin3Line fill="currentColor" size="1.2rem" />
               Delete
             </DeleteBtn>
@@ -38,12 +53,3 @@ export default function ContactsList({ contacts, deleteContact }) {
     </ContactList>
   );
 }
-
-ContactList.propTypes = {
-  contacts: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    number: PropTypes.string.isRequired,
-  }),
-  deleteContact: PropTypes.func,
-};

@@ -1,13 +1,27 @@
-import { configureStore, createAction, createReducer } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-const initialState = {
-  contacts: [],
+import contactsReducer from './contactsSlice';
+import filterReducer from './filterSlice';
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['contacts'],
 };
 
-const addContact = createAction('ADDCONTACT');
-
-const reducer = createReducer(initialState, {
-  [addContact]: (state, action) => ({state.contacts.push(action.payload)})
+const rootReducer = combineReducers({
+  contacts: contactsReducer,
+  filter: filterReducer,
 });
 
-export const store = configureStore({ reducer });
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const store = configureStore({
+  reducer: persistedReducer,
+});
+
+const persistor = persistStore(store);
+
+export { store, persistor };
