@@ -43,7 +43,7 @@ export default function ContactsList() {
               </ContactInfo>
             </ContactCard>
 
-            <DeleteBtn onClick={handleDeleteContact}>
+            <DeleteBtn onClick={() => handleDeleteContact(id)}>
               <RiDeleteBin3Line fill="currentColor" size="1.2rem" />
               Delete
             </DeleteBtn>
